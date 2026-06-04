@@ -18,8 +18,6 @@ COPY app/ ./app/
 COPY dashboard/ ./dashboard/
 COPY pipeline/ ./pipeline/
 # Copy metadata datasets
-COPY "Brigade Road - Store layoutc5f5d56.xlsx" .
-COPY "Brigade_Bangalore_10_April_26 (1)bc6219c.csv" .
 COPY updated_problemstatement/ ./updated_problemstatement/
 
 # Create data folder for database and events
