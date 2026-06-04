@@ -149,6 +149,14 @@ def render_dashboard_content(store_id):
     t_after_load = time.perf_counter()
 
     if metrics and funnel and heatmap is not None:
+        # Check if the store has no camera event data loaded
+        if metrics["unique_visitors"] == 0:
+            st.warning(
+                f"💡 **System Status:** Store **{store_id}** currently contains POS transaction records but has no "
+                f"associated CCTV camera event stream in the loaded dataset. Visual analytics require visitor tracking events. "
+                f"Please select **ST1076** in the sidebar to view fully populated live metrics."
+            )
+
         # 1. Main KPIs row
         t_kpi_start = time.perf_counter()
         col1, col2, col3, col4 = st.columns(4)
@@ -203,7 +211,10 @@ def render_dashboard_content(store_id):
                     else:
                         st.info(f"ℹ️ **INFO: {anom['anomaly_type']}**\n\n{anom['message']}\n\n**Action:** {anom['suggested_action']}")
             else:
-                st.success("✅ No operational anomalies detected. All store operations are normal.")
+                if metrics["unique_visitors"] > 0:
+                    st.success("✅ No operational anomalies detected. All store operations are normal.")
+                else:
+                    st.info("No anomalies evaluated (requires active event logs).")
         t_funnel_end = time.perf_counter()
 
         # 3. Heatmap and Dwell Times row
@@ -244,7 +255,7 @@ def render_dashboard_content(store_id):
                 st.plotly_chart(fig_heat, use_container_width=True)
                 plotly_durations.append(("heatmap", (time.perf_counter() - t_plotly_heatmap_start) * 1000))
             else:
-                st.info("No zone event data available yet.")
+                st.info(f"No camera events available for Store {store_id}. Analytics require visitor tracking events. Try selecting ST1076 to view populated metrics.")
 
         with col_h2:
             st.subheader("Layout Zone Performance")
@@ -256,7 +267,7 @@ def render_dashboard_content(store_id):
                 confidence_str = "✅ HIGH (>= 20 sessions)" if heatmap["data_confidence"] else "⚠️ LOW (< 20 sessions)"
                 st.write(f"**Data Confidence Rating:** {confidence_str}")
             else:
-                st.info("No performance stats available.")
+                st.info(f"No performance stats available for Store {store_id}. Try selecting ST1076 to view populated metrics.")
         t_heatmap_end = time.perf_counter()
 
         # 4. Customer Demographics Section (New Schema)
@@ -320,7 +331,12 @@ def render_dashboard_content(store_id):
                     """, 
                     unsafe_allow_html=True
                 )
+        else:
+            st.markdown("---")
+            st.subheader("👥 Customer Demographics & Shopping Group Dynamics")
+            st.info(f"No demographic profile data captured for Store {store_id}. Try selecting ST1076 to view populated metrics.")
         t_demographics_end = time.perf_counter()
+
 
         # Print all timings
         frag_end = time.perf_counter()
