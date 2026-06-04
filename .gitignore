@@ -1,0 +1,34 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Database
+data/store_sight.db
+
+# Test and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Large datasets & CCTV videos
+CCTV Footage*/
+*.mp4
+*.zip
+
+# Debug and extract assets
+extracted_images/
+*.png
+*.jpg
+*.jpeg
+
+# OS metadata
+.DS_Store
+Thumbs.db
