@@ -60,7 +60,12 @@ try:
 except Exception:
     store_list = ["ST1008"]
 
-store_id = st.sidebar.selectbox("Select Store ID", options=store_list, index=0)
+# Default to ST1076 on first load if available, so it shows fully populated metrics immediately
+default_index = 0
+if "ST1076" in store_list:
+    default_index = store_list.index("ST1076")
+
+store_id = st.sidebar.selectbox("Select Store ID", options=store_list, index=default_index)
 
 # Sidebar metadata
 if store_id == "ST1008":
